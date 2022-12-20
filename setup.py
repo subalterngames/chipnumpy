@@ -8,7 +8,7 @@ setup(
     description='Create simple "chiptune" style audio waveforms using numpy.',
     long_description=Path("README.md").read_text(encoding="utf-8"),
     long_description_content_type='text/markdown',
-    url='https://github.com/subalterngames/orbit2d',
+    url='https://github.com/subalterngames/chipnumpy',
     author_email='subalterngames@gmail.com',
     author='Esther Alter',
     license='MIT',
