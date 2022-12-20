@@ -64,9 +64,4 @@ To convert data to wav data and write to disk: `s.write(data, path)` where `data
 
 This module can be thought of as being inspired by [chippy](https://github.com/benmoran56/chippy) rather than a fork because the waveform generation code has been rewritten.
 
-The waveforms in `chipnumpy` are the same as those in `chippy`. There are two key differences:
- 
-- `chipnumpy` uses numpy while `chippy` is pure-Python.
-- `chipnumpy` optionally caches each waveform while `chippy` doesn't.
- 
-As a result, `chipnumpy` is significantly faster than `chippy`.
+The waveforms in `chipnumpy` are the same as those in `chippy` and the two modules' APIs are very similar. The key difference is that `chipnumpy` uses numpy to generate waveforms while `chippy` is pure-Python. As a result, `chipnumpy` is significantly faster. 
