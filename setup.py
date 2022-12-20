@@ -23,5 +23,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     keywords='orbit planet star celestial kepler orbital',
-    install_requires=['overrides'],
+    install_requires=['numpy'],
 )

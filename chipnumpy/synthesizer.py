@@ -2,7 +2,7 @@ from typing import Tuple, Union
 from pathlib import Path
 from struct import pack
 import numpy as np
-from chipnumpy.constants import FRAMERATE, AMPLITUDE_SCALE, NUM_CHANNELS, NUM_BITS
+from chipnumpy.constants import FRAMERATE, AMPLITUDE_SCALE, NUM_CHANNELS, NUM_BITS, NOTES, OCTAVES
 
 
 class Synthesizer:
@@ -34,45 +34,42 @@ class Synthesizer:
         else:
             self._rng = np.random.RandomState(seed)
 
-    def sine(self, frequency: float, amplitude: float, length: float) -> bytes:
+    def sine(self, note: Union[str, float], amplitude: float, length: float) -> bytes:
         """
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or the frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
         :param length: The length in seconds.
 
         :return A sine waveform.
         """
 
-        return Synthesizer._to_bytes(Synthesizer._sine(frequency=frequency, amplitude=amplitude),
-                                     length=length)
+        return Synthesizer._to_bytes(Synthesizer._sine(note=note, amplitude=amplitude), length=length)
 
-    def triangle(self, frequency: float, amplitude: float, length: float) -> bytes:
+    def triangle(self, note: Union[str, float], amplitude: float, length: float) -> bytes:
         """
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or the frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
         :param length: The length in seconds.
 
         :return A triangle waveform.
         """
 
-        return Synthesizer._to_bytes(Synthesizer._triangle(frequency=frequency, amplitude=amplitude),
-                                     length=length)
+        return Synthesizer._to_bytes(Synthesizer._triangle(note=note, amplitude=amplitude), length=length)
 
-    def sawtooth(self, frequency: float, amplitude: float, length: float) -> bytes:
+    def sawtooth(self, note: Union[str, float], amplitude: float, length: float) -> bytes:
         """
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or the frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
         :param length: The length in seconds.
 
         :return A sawtooth waveform.
         """
 
-        return Synthesizer._to_bytes(Synthesizer._sawtooth(frequency=frequency, amplitude=amplitude),
-                                     length=length)
+        return Synthesizer._to_bytes(Synthesizer._sawtooth(note=note, amplitude=amplitude), length=length)
 
-    def pulse(self, frequency: float, amplitude: float, length: float, duty_cycle: int = 50) -> bytes:
+    def pulse(self, note: Union[str, float], amplitude: float, length: float, duty_cycle: int = 50) -> bytes:
         """
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or the frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
         :param length: The length in seconds.
         :param duty_cycle: An integer that controls length of each pulse. Must be between 1 and 100.
@@ -80,20 +77,18 @@ class Synthesizer:
         :return A pulse waveform.
         """
 
-        return Synthesizer._to_bytes(Synthesizer._pulse(frequency=frequency, amplitude=amplitude, duty_cycle=duty_cycle),
-                                     length=length)
+        return Synthesizer._to_bytes(Synthesizer._pulse(note=note, amplitude=amplitude, duty_cycle=duty_cycle), length=length)
 
-    def noise(self, frequency: float, amplitude: float, length: float) -> bytes:
+    def noise(self, note: Union[str, float], amplitude: float, length: float) -> bytes:
         """
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or the frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
         :param length: The length in seconds.
 
         :return A noise waveform using random values between -1 and 1.
         """
 
-        return Synthesizer._to_bytes(self._noise(frequency=frequency, amplitude=amplitude),
-                                     length=length)
+        return Synthesizer._to_bytes(self._noise(note=note, amplitude=amplitude), length=length)
 
     @staticmethod
     def to_wav(data: bytes) -> bytes:
@@ -158,17 +153,17 @@ class Synthesizer:
         return samples.tobytes()
 
     @staticmethod
-    def _sine(frequency: float, amplitude: float) -> np.ndarray:
+    def _sine(note: Union[str, float], amplitude: float) -> np.ndarray:
         """
         Generate a sine waveform.
 
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or the frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
 
         :return: A numpy sine waveform.
         """
 
-        period, amplitude, arr = Synthesizer._start(frequency=frequency, amplitude=amplitude)
+        frequency, period, amplitude, arr = Synthesizer._start(note=note, amplitude=amplitude)
         # Get the range and convert to float64.
         arr: np.ndarray = np.arange(0, period).astype(np.float64)
         # Apply a sine.
@@ -178,75 +173,92 @@ class Synthesizer:
         return arr
 
     @staticmethod
-    def _triangle(frequency: float, amplitude: float) -> np.ndarray:
+    def _triangle(note: Union[str, float], amplitude: float) -> np.ndarray:
         """
         Generate a triangle waveform.
 
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or a frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
 
         :return: A numpy triangle waveform.
         """
 
-        period, amplitude, arr = Synthesizer._start(frequency=frequency, amplitude=amplitude)
+        frequency, period, amplitude, arr = Synthesizer._start(note=note, amplitude=amplitude)
         half_period: float = period / 2
         return (amplitude / half_period) * (half_period - np.abs(arr % period - half_period) * 2 - 1)
 
     @staticmethod
-    def _sawtooth(frequency: float, amplitude: float) -> np.ndarray:
+    def _sawtooth(note: Union[str, float], amplitude: float) -> np.ndarray:
         """
         Generate a sawtooth waveform.
 
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or a frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
 
         :return: A numpy sawtooth waveform.
         """
 
-        period, amplitude, arr = Synthesizer._start(frequency=frequency, amplitude=amplitude)
+        frequency, period, amplitude, arr = Synthesizer._start(note=note, amplitude=amplitude)
         return amplitude * (frequency * (arr % period / FRAMERATE) * 2 - 1)
 
     @staticmethod
-    def _pulse(frequency: float, amplitude: float, duty_cycle: int = 50) -> np.ndarray:
+    def _pulse(note: Union[str, float], amplitude: float, duty_cycle: int = 50) -> np.ndarray:
         """
         Generate a pulse waveform.
 
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or a frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
         :param duty_cycle: An integer that controls length of each pulse. Must be between 1 and 100.
 
         :return: A numpy pulse waveform.
         """
 
-        period, amplitude, arr = Synthesizer._start(frequency=frequency, amplitude=amplitude)
+        frequency, period, amplitude, arr = Synthesizer._start(note=note, amplitude=amplitude)
         duty_cycle = int(duty_cycle * period / 100)
         return amplitude * ((arr < duty_cycle).astype(int) * 2 - 1)
 
-    def _noise(self, frequency: float, amplitude: float) -> np.ndarray:
+    def _noise(self, note: Union[str, float], amplitude: float) -> np.ndarray:
         """
         Generate a noise waveform using random values between -1 and 1.
 
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or a frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
 
         :return: A numpy noise waveform.
         """
 
-        period = int(FRAMERATE / frequency)
-        arr = self._rng.uniform(-1, 1, size=period)
+        frequency: float = Synthesizer._get_frequency(note=note)
+        period: int = int(FRAMERATE / frequency)
+        arr: np.ndarray = self._rng.uniform(-1, 1, size=period)
         np.multiply(arr, amplitude, out=arr)
         return arr
 
     @staticmethod
-    def _start(frequency: float, amplitude: float) -> Tuple[int, float, np.ndarray]:
+    def _get_frequency(note: Union[str, float]) -> float:
+        """
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or a frequency in Hz as a float.
+
+        :return: A frequency in Hz as a float.
+        """
+
+        if isinstance(note, str):
+            return NOTES[note] * OCTAVES[int(note[-1])]
+        elif isinstance(note, float):
+            return note
+        else:
+            raise Exception(f"Invalid note: {note}")
+
+    @staticmethod
+    def _start(note: Union[str, float], amplitude: float) -> Tuple[float, int, float, np.ndarray]:
         """
         Generate data used by most waveform types.
 
-        :param frequency: The frequency in Hz.
+        :param note: Either a note expressed as a note + octave string, e.g. `"F#4"`, or a frequency in Hz as a float.
         :param amplitude: The amplitude (0 to 1).
 
-        :return: Tuple: The period as an int, the amplitude clamped between 0 and 1, and a numpy array of length `period`.
+        :return: Tuple: The frequency in Hz, the period as an int, the clamped amplitude, and a numpy array of length `period`.
         """
 
-        period = int(FRAMERATE / frequency)
-        return period, 0 if amplitude < 0 else 1 if amplitude > 1 else amplitude, np.arange(0, period).astype(np.float64)
+        frequency: float = Synthesizer._get_frequency(note=note)
+        period: int = int(FRAMERATE / frequency)
+        return frequency, period, 0 if amplitude < 0 else 1 if amplitude > 1 else amplitude, np.arange(0, period).astype(np.float64)
