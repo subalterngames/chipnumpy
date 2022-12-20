@@ -1,3 +1,4 @@
+from pathlib import Path
 from setuptools import setup, find_packages
 
 
@@ -5,14 +6,14 @@ setup(
     name='chipnumpy',
     version='0.0.1',
     description='Create simple "chiptune" style audio waveforms using numpy.',
-    long_description='Create simple "chiptune" style audio waveforms using numpy.',
+    long_description=Path("README.md").read_text(encoding="utf-8"),
     long_description_content_type='text/markdown',
     url='https://github.com/subalterngames/orbit2d',
     author_email='subalterngames@gmail.com',
     author='Esther Alter',
     license='MIT',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Software Development',
         'License :: OSI Approved :: BSD License',
@@ -22,6 +23,6 @@ setup(
     ],
     packages=find_packages(),
     include_package_data=True,
-    keywords='orbit planet star celestial kepler orbital',
+    keywords='audio chiptune synthesizer waveform',
     install_requires=['numpy'],
 )

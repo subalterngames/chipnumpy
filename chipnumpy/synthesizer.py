@@ -19,7 +19,7 @@ class Synthesizer:
                          NUM_CHANNELS,
                          FRAMERATE,
                          FRAMERATE * NUM_CHANNELS * NUM_BITS // 8,
-                         FRAMERATE * NUM_BITS // 8,
+                         NUM_CHANNELS * NUM_BITS // 8,
                          NUM_BITS,
                          b"data",
                          0)
@@ -242,7 +242,7 @@ class Synthesizer:
         """
 
         if isinstance(note, str):
-            return NOTES[note] * OCTAVES[int(note[-1])]
+            return NOTES[note[:-1]] * OCTAVES[int(note[-1])]
         elif isinstance(note, float):
             return note
         else:

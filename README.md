@@ -2,11 +2,17 @@
 
 **Chipnumpy is a module for creating simple "chiptune" style audio waveforms using numpy.** 
 
-# API
+To install:
 
-## Synthesizer
+```bash
+pip3 install chipnumpy
+```
 
-### The constructor
+For example implementation, see `examples/c_scale.py` (requires pygame to play the audio).
+
+# Synthesizer API
+
+## The constructor
 
 Start to generate audio by creating a Synthesizer:
 
@@ -18,7 +24,7 @@ s = Synthesizer()
 
 You can optionally set the random seed: `s = Synthesizer(seed=0)`. This is used when generating noise waveforms; it can be useful if you want to recreate noise waveforms with the same seed.
 
-### Generate a sine waveform
+## Generate a sine waveform
 
 ```python
 from chipnumpy.synthesizer import Synthesizer
@@ -42,7 +48,7 @@ data = s.sine(note="C5", amplitude=0.5, length=1.1)
 
 The returned `data` is an int16 byte array.
 
-### Generate other waveforms
+## Generate other waveforms
 
 To generate a **triangle waveform**: `data = s.triangle("C5", 0.5, 1.1)`
 
@@ -54,11 +60,13 @@ To generate a **sawtooth waveform**: `data = s.sawtooth("C5", 0.5, 1.1)`
 
 To generate a **noise waveform** with the same syntax: `data = s.noise("C5", 0.5, 1.1)` This uses random values; see above for how to seed the random number generator.
 
-### Generate and write wav data
+## Generate and write wav data
 
 To convert data to wav data (i.e. to add a wav header): `wav = s.to_wav(data)`
 
 To convert data to wav data and write to disk: `s.write(data, path)` where `data` is an int16 byte array and `path` is either a string or a `Path`.
+
+***
 
 # Comparison to `chippy`
 
