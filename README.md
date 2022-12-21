@@ -1,6 +1,8 @@
 # Chipnumpy
 
-**Chipnumpy is a module for creating simple "chiptune" style audio waveforms using numpy.** 
+**Chipnumpy is a module for creating simple chiptune style audio waveforms using numpy.** 
+
+Chipnumpy was inspired by [chippy](https://github.com/benmoran56/chippy). It has a similar API and generates the same types of waveforms. Unlike chippy, chipnumpy uses numpy, which makes it significantly faster.
 
 To install:
 
@@ -65,11 +67,3 @@ To generate a **noise waveform** with the same syntax: `data = s.noise("C5", 0.5
 To convert data to wav data (i.e. to add a wav header): `wav = s.to_wav(data)`
 
 To convert data to wav data and write to disk: `s.write(data, path)` where `data` is an int16 byte array and `path` is either a string or a `Path`.
-
-***
-
-# Comparison to `chippy`
-
-This module can be thought of as being inspired by [chippy](https://github.com/benmoran56/chippy) rather than a fork because the waveform generation code has been rewritten.
-
-The waveforms in `chipnumpy` are the same as those in `chippy` and the two modules' APIs are very similar. The key difference is that `chipnumpy` uses numpy to generate waveforms while `chippy` is pure-Python. As a result, `chipnumpy` is significantly faster. 
