@@ -1,4 +1,4 @@
 .idea/
 scratch.py
-chipnumpy/__pycache__/
+*.pyc
 chipnumpy.egg-info/
