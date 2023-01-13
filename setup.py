@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='chipnumpy',
-    version='0.0.1',
+    version='1.0.0',
     description='Create simple "chiptune" style audio waveforms using numpy.',
     long_description=Path("README.md").read_text(encoding="utf-8"),
     long_description_content_type='text/markdown',
@@ -13,7 +13,7 @@ setup(
     author='Esther Alter',
     license='MIT',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Software Development',
         'License :: OSI Approved :: BSD License',

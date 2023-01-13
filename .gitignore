@@ -2,3 +2,5 @@
 scratch.py
 *.pyc
 chipnumpy.egg-info/
+pypi.py
+dist/
