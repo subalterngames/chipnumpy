@@ -105,7 +105,10 @@ class Synthesizer:
         Synthesizer.HEADER[4:8] = pack('<I', length + 36)
         # Set the data length.
         Synthesizer.HEADER[-4:] = pack('<I', length)
-        return Synthesizer.HEADER + data
+        wav = bytearray()
+        wav.extend(Synthesizer.HEADER)
+        wav.extend(data)
+        return bytes(wav)
 
     @staticmethod
     def write(data: bytes, path: Union[str, Path]) -> None:
